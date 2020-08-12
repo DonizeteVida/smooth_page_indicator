@@ -11,8 +11,8 @@ abstract class Dots @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    protected var layoutWidth: Int = 0
-    protected var layoutHeight: Int = 0
+    private var layoutWidth: Int = 0
+    private var layoutHeight: Int = 0
 
     protected var dotsCount: Int = 0
     protected var dotsSpace: Float = 0F
@@ -30,7 +30,7 @@ abstract class Dots @JvmOverloads constructor(
 
     protected val rRect: RectF = RectF()
 
-    protected fun updateRRect(from: Float, to: Float){
+    protected fun updateRRect(from: Float, to: Float) {
         rRect.apply {
             top = 0F
             bottom = itemSize
@@ -51,7 +51,7 @@ abstract class Dots @JvmOverloads constructor(
 
             dotsCount = attributes.getInteger(R.styleable.Dots_dotsCount, 0)
             dotsSpace = attributes.getFloat(R.styleable.Dots_dotsSpace, 0F)
-            dotsRadius = attributes.getFloat(R.styleable.Dots_dotsRadius, 0F)
+            dotsRadius = attributes.getFloat(R.styleable.Dots_dotsRadius, -99F)
 
             activeColor.color = attributes.getColor(R.styleable.Dots_activeColor, Color.BLUE)
             inactiveColor.color = attributes.getColor(R.styleable.Dots_inactiveColor, Color.GRAY)
@@ -67,6 +67,9 @@ abstract class Dots @JvmOverloads constructor(
         layoutHeight = MeasureSpec.getSize(heightMeasureSpec)
 
         itemSize = layoutHeight.toFloat()
+        if (dotsRadius == -99F) {
+            dotsRadius = itemSize / 2
+        }
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }

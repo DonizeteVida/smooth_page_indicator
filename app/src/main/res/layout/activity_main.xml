@@ -8,36 +8,54 @@
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <com.doni.dots.WormDots
         android:layout_margin="20dp"
-        app:activeColor="@color/colorPrimary"
-        app:inactiveColor="@color/colorPrimaryDark"
-        app:dotsSpace="20"
-        app:dotsCount="5"
         android:id="@+id/wormDots"
         android:layout_width="match_parent"
         android:layout_height="25dp"
+        app:activeColor="#F0F"
+        app:dotsCount="5"
+        app:dotsRadius="0"
+        app:dotsSpace="20"
+        app:inactiveColor="#25CCFF"
         app:layout_constraintBottom_toTopOf="@+id/expandingDots"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        tools:layout_editor_absoluteX="20dp" />
 
     <com.doni.dots.ExpandingDots
         android:layout_margin="20dp"
-        app:dotsCount="5"
-        app:expandingSpace="150"
-        app:dotsSpace="20"
         android:id="@+id/expandingDots"
         android:layout_width="match_parent"
         android:layout_height="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:dotsCount="5"
+        app:dotsRadius="0"
+        app:dotsSpace="20"
+        app:expandingSpace="150"
+        app:layout_constraintBottom_toTopOf="@+id/wormDots2"
+        tools:layout_editor_absoluteX="20dp" />
+
+    <com.doni.dots.WormDots
+        android:layout_margin="20dp"
+        android:id="@+id/wormDots2"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        app:dotsCount="5"
+        app:dotsSpace="60"
+        app:layout_constraintBottom_toTopOf="@+id/expandingDots2"
+        tools:layout_editor_absoluteX="20dp" />
+
+    <com.doni.dots.ExpandingDots
+        android:layout_margin="20dp"
+        android:id="@+id/expandingDots2"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        app:dotsCount="5"
+        app:dotsSpace="40"
+        app:expandingSpace="150"
+        app:activeColor="#FABFFC"
+        app:layout_constraintBottom_toBottomOf="@+id/viewPager"
+        tools:layout_editor_absoluteX="20dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
