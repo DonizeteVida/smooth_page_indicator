@@ -16,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.doni.dots.WormDots
+        android:rotationX="45"
         android:id="@+id/wormDots"
         android:layout_width="match_parent"
         android:layout_height="25dp"
