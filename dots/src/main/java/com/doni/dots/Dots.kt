@@ -16,8 +16,9 @@ abstract class Dots @JvmOverloads constructor(
 
     protected var dotsCount: Int = 0
     protected var dotsSpace: Float = 0F
-
     protected var dotsRadius: Float = 0F
+
+    protected var itemSize: Float = 0F
 
     val inactiveColor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.GRAY
@@ -25,6 +26,17 @@ abstract class Dots @JvmOverloads constructor(
 
     val activeColor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.BLUE
+    }
+
+    protected val rRect: RectF = RectF()
+
+    protected fun updateRRect(from: Float, to: Float){
+        rRect.apply {
+            top = 0F
+            bottom = itemSize
+            left = from
+            right = to
+        }
     }
 
     var currentOffset: Float = 0F
@@ -39,6 +51,7 @@ abstract class Dots @JvmOverloads constructor(
 
             dotsCount = attributes.getInteger(R.styleable.Dots_dotsCount, 0)
             dotsSpace = attributes.getFloat(R.styleable.Dots_dotsSpace, 0F)
+            dotsRadius = attributes.getFloat(R.styleable.Dots_dotsRadius, 0F)
 
             activeColor.color = attributes.getColor(R.styleable.Dots_activeColor, Color.BLUE)
             inactiveColor.color = attributes.getColor(R.styleable.Dots_inactiveColor, Color.GRAY)
@@ -53,23 +66,23 @@ abstract class Dots @JvmOverloads constructor(
         layoutWidth = MeasureSpec.getSize(widthMeasureSpec)
         layoutHeight = MeasureSpec.getSize(heightMeasureSpec)
 
-        dotsRadius = layoutHeight.toFloat() / 2
+        itemSize = layoutHeight.toFloat()
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
-    protected fun startDotPosition(otherValue: Float = 0F): Float {
-        val dotsLength = (dotsCount - 1) * dotsRadius * 2
+    private fun startPosition(otherValue: Float = 0F): Float {
+        val dotsLength = dotsCount * itemSize
         val dotsSpaceLength = (dotsCount - 1) * dotsSpace
 
         return (layoutWidth.toFloat() - dotsSpaceLength - dotsLength - otherValue) / 2
     }
 
     protected fun startRectPosition(otherValue: Float = 0F): Float =
-        startDotPosition(otherValue) - dotsRadius
+        startPosition(otherValue)
 
     protected fun rectPosition(roundOffset: Int): Float =
-        startRectPosition() + (roundOffset * 2 * dotsRadius) + (roundOffset * dotsSpace)
+        startRectPosition() + (roundOffset * itemSize) + (roundOffset * dotsSpace)
 }
 
 class WormDots @JvmOverloads constructor(
@@ -78,19 +91,16 @@ class WormDots @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : Dots(context, attrs, defStyleAttr) {
 
-    private var rRect: RectF = RectF().apply {
-        top = 0F
-    }
-
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
         canvas?.run {
-            var position = startDotPosition()
+            var position = startRectPosition()
 
             for (dot in 0 until dotsCount) {
-                drawCircle(position, layoutHeight.toFloat() / 2, dotsRadius, inactiveColor)
-                position += (dotsRadius * 2) + dotsSpace
+                updateRRect(from = position, to = position + itemSize)
+                drawRoundRect(rRect, dotsRadius, dotsRadius, inactiveColor)
+                position += itemSize + dotsSpace
             }
 
             val roundOffset = currentOffset.toInt()
@@ -98,29 +108,22 @@ class WormDots @JvmOverloads constructor(
             val diff = currentOffset - roundOffset.toFloat()
 
             val (from, to) = if (diff > 0.5F) {
-
                 val rDiff = ((diff / 0.5) - 1).toFloat()
 
-                val from =
-                    rectPosition(roundOffset) + (rDiff * dotsSpace) + (rDiff * dotsRadius * 2)
-
+                val from = rectPosition(roundOffset) + (rDiff * dotsSpace) + (rDiff * itemSize)
                 val to = rectPosition(roundOffset + 2) - dotsSpace
 
                 from to to
             } else {
                 val rDiff = diff * 2
+
                 val from = rectPosition(roundOffset)
-                val to = from + (dotsRadius * 2) + (rDiff * dotsRadius * 2) + (rDiff * dotsSpace)
+                val to = from + itemSize + (rDiff * itemSize) + (rDiff * dotsSpace)
 
                 from to to
             }
 
-            rRect.let {
-                it.left = from
-                it.bottom = dotsRadius * 2
-                it.right = to
-            }
-
+            updateRRect(from = from, to = to)
             drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
         }
     }
@@ -136,7 +139,8 @@ class ExpandingDots @JvmOverloads constructor(
 
     init {
         context?.run {
-            val attributes = theme.obtainStyledAttributes(attrs, R.styleable.ExpandingDots, defStyleAttr, 0)
+            val attributes =
+                theme.obtainStyledAttributes(attrs, R.styleable.ExpandingDots, defStyleAttr, 0)
 
             expandingSpace = attributes.getFloat(R.styleable.ExpandingDots_expandingSpace, 0f)
 
@@ -144,15 +148,11 @@ class ExpandingDots @JvmOverloads constructor(
         }
     }
 
-    private var rRect: RectF = RectF().apply {
-        top = 0F
-    }
-
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
         canvas?.run {
-            var position = startDotPosition(expandingSpace)
+            var position = startRectPosition(expandingSpace)
             val roundOffset: Int = currentOffset.toInt()
 
             val firstDifference: Float = 1 - (currentOffset - roundOffset)
@@ -162,34 +162,22 @@ class ExpandingDots @JvmOverloads constructor(
                 if (roundOffset == dot) {
                     val factor = expandingSpace * firstDifference
 
-                    position -= dotsRadius
-
-                    rRect.let {
-                        it.left = position
-                        it.bottom = dotsRadius * 2
-                        it.right = position + factor + (dotsRadius * 2)
-                    }
-
-                    position += factor + (dotsRadius * 2) + dotsSpace
-
+                    updateRRect(from = position, to = position + factor + itemSize)
                     drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
+
+                    position += factor + itemSize + dotsSpace
                 } else if (dot == roundOffset + (firstDifference + secondDifference).toInt()) {
                     val factor = expandingSpace * secondDifference
 
-                    rRect.let {
-                        it.left = position
-                        it.bottom = dotsRadius * 2
-                        it.right = position + factor + (dotsRadius * 2)
-                    }
-
-                    position += factor + (dotsRadius * 2) + dotsSpace
-
+                    updateRRect(from = position, to = position + factor + itemSize)
                     drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
 
-                    position += dotsRadius
+                    position += factor + itemSize + dotsSpace
                 } else {
-                    drawCircle(position, layoutHeight.toFloat() / 2, dotsRadius, activeColor)
-                    position += (dotsRadius * 2) + dotsSpace
+                    updateRRect(from = position, to = position + itemSize)
+                    drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
+
+                    position += itemSize + dotsSpace
                 }
             }
         }

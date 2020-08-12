@@ -5,6 +5,7 @@
         <attr name="inactiveColor" format="color"/>
         <attr name="dotsCount" format="integer"/>
         <attr name="dotsSpace" format="float"/>
+        <attr name="dotsRadius" format="float"/>
     </declare-styleable>
 
     <declare-styleable name="WormDots">
