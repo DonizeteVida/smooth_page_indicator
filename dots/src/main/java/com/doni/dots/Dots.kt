@@ -15,8 +15,9 @@ abstract class Dots @JvmOverloads constructor(
     protected var layoutHeight: Int = 0
 
     protected var dotsCount: Int = 0
-    protected var dotsRadius: Float = 0F
     protected var dotsSpace: Float = 0F
+
+    protected var dotsRadius: Float = 0F
 
     val inactiveColor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.GRAY
@@ -31,6 +32,21 @@ abstract class Dots @JvmOverloads constructor(
             field = value
             invalidate()
         }
+
+    init {
+        context?.run {
+            val attributes = theme.obtainStyledAttributes(attrs, R.styleable.Dots, defStyleAttr, 0)
+
+            dotsCount = attributes.getInteger(R.styleable.Dots_dotsCount, 0)
+            dotsSpace = attributes.getFloat(R.styleable.Dots_dotsSpace, 0F)
+
+            activeColor.color = attributes.getColor(R.styleable.Dots_activeColor, Color.BLUE)
+            inactiveColor.color = attributes.getColor(R.styleable.Dots_inactiveColor, Color.GRAY)
+
+            attributes.recycle()
+        }
+    }
+
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 
@@ -61,11 +77,6 @@ class WormDots @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : Dots(context, attrs, defStyleAttr) {
-
-    init {
-        dotsCount = 5
-        dotsSpace = 10F
-    }
 
     private var rRect: RectF = RectF().apply {
         top = 0F
@@ -121,12 +132,17 @@ class ExpandingDots @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : Dots(context, attrs, defStyleAttr) {
 
-    init {
-        dotsCount = 5
-        dotsSpace = 10F
-    }
+    private var expandingSpace: Float = 0F
 
-    private val expandingValue: Float = 190F
+    init {
+        context?.run {
+            val attributes = theme.obtainStyledAttributes(attrs, R.styleable.ExpandingDots, defStyleAttr, 0)
+
+            expandingSpace = attributes.getFloat(R.styleable.ExpandingDots_expandingSpace, 0f)
+
+            attributes.recycle()
+        }
+    }
 
     private var rRect: RectF = RectF().apply {
         top = 0F
@@ -136,7 +152,7 @@ class ExpandingDots @JvmOverloads constructor(
         super.onDraw(canvas)
 
         canvas?.run {
-            var position = startDotPosition(expandingValue)
+            var position = startDotPosition(expandingSpace)
             val roundOffset: Int = currentOffset.toInt()
 
             val firstDifference: Float = 1 - (currentOffset - roundOffset)
@@ -144,7 +160,7 @@ class ExpandingDots @JvmOverloads constructor(
 
             for (dot in 0 until dotsCount) {
                 if (roundOffset == dot) {
-                    val factor = expandingValue * firstDifference
+                    val factor = expandingSpace * firstDifference
 
                     position -= dotsRadius
 
@@ -158,7 +174,7 @@ class ExpandingDots @JvmOverloads constructor(
 
                     drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
                 } else if (dot == roundOffset + (firstDifference + secondDifference).toInt()) {
-                    val factor = expandingValue * secondDifference
+                    val factor = expandingSpace * secondDifference
 
                     rRect.let {
                         it.left = position

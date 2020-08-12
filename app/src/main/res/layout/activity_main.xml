@@ -16,7 +16,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.doni.dots.WormDots
-        android:rotationX="45"
+        android:layout_margin="20dp"
+        app:activeColor="@color/colorPrimary"
+        app:inactiveColor="@color/colorPrimaryDark"
+        app:dotsSpace="20"
+        app:dotsCount="5"
         android:id="@+id/wormDots"
         android:layout_width="match_parent"
         android:layout_height="25dp"
@@ -25,6 +29,10 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.doni.dots.ExpandingDots
+        android:layout_margin="20dp"
+        app:dotsCount="5"
+        app:expandingSpace="150"
+        app:dotsSpace="20"
         android:id="@+id/expandingDots"
         android:layout_width="match_parent"
         android:layout_height="25dp"
