@@ -93,7 +93,7 @@ class WormDots : Dots {
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     init {
-        dotsCount = 10
+        dotsCount = 5
         dotsSpace = 10F
     }
 
@@ -141,6 +141,47 @@ class WormDots : Dots {
             }
 
             drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
+        }
+    }
+}
+
+class ExpandingDots : Dots{
+    constructor(context: Context?) : super(context)
+
+    constructor(
+        context: Context?,
+        attrs: AttributeSet?
+    ) : super(context, attrs)
+
+    constructor(
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
+    ) : super(context, attrs, defStyleAttr)
+
+    constructor(
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
+
+    init {
+        dotsCount = 5
+        dotsSpace = 10F
+    }
+
+    val expandingValue: Float = 10F
+
+    private var rRect: RectF = RectF().apply {
+        top = 0F
+    }
+
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
+
+        canvas?.run {
+
         }
     }
 }

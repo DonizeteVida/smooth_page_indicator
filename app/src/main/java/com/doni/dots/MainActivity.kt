@@ -41,6 +41,6 @@ class ViewPagerAdapter(fm: FragmentManager) :
 
     override fun getItem(position: Int) = BlankFragment()
 
-    override fun getCount() = 10
+    override fun getCount() = 5
 }
 
