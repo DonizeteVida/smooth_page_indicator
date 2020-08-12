@@ -18,7 +18,7 @@
     <com.doni.dots.WormDots
         android:id="@+id/wormDots"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

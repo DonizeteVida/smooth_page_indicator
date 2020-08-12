@@ -57,12 +57,18 @@ abstract class Dots : View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
-    fun startPosition(): Float {
+    protected fun startDotPosition(): Float {
         val dotsLength = (dotsCount - 1) * dotsRadius * 2
         val dotsSpaceLength = (dotsCount - 1) * dotsSpace
 
         return (layoutWidth.toFloat() - dotsSpaceLength - dotsLength) / 2
     }
+
+    protected fun startRectPosition(): Float =
+        startDotPosition() - dotsRadius
+
+    protected fun rectPosition(roundOffset: Int): Float =
+        startRectPosition() + (roundOffset * 2 * dotsRadius) + (roundOffset * dotsSpace)
 }
 
 class WormDots : Dots {
@@ -99,7 +105,7 @@ class WormDots : Dots {
         super.onDraw(canvas)
 
         canvas?.run {
-            var position = startPosition()
+            var position = startDotPosition()
 
             for (dot in 0 until dotsCount) {
                 drawCircle(position, layoutHeight.toFloat() / 2, dotsRadius, inactiveColor)
@@ -110,22 +116,19 @@ class WormDots : Dots {
 
             val diff = currentOffset - roundOffset.toFloat()
 
-            val (from, to) = if (diff > 0.5000F) {
+            val (from, to) = if (diff > 0.5F) {
 
                 val rDiff = ((diff / 0.5) - 1).toFloat()
 
                 val from =
-                    startPosition() - dotsRadius + (roundOffset * dotsRadius * 2) + (roundOffset * dotsSpace) + (rDiff * dotsSpace) + (rDiff * dotsRadius * 2)
+                    rectPosition(roundOffset) + (rDiff * dotsSpace) + (rDiff * dotsRadius * 2)
 
-                val to = startPosition() + ((roundOffset + 1).let {
-                    it * dotsSpace + it * dotsRadius * 2
-                }) + dotsRadius
+                val to = rectPosition(roundOffset + 2) - dotsSpace
 
                 from to to
             } else {
                 val rDiff = diff * 2
-                val from =
-                    startPosition() - dotsRadius + (roundOffset * dotsRadius * 2) + (roundOffset * dotsSpace)
+                val from = rectPosition(roundOffset)
                 val to = from + (dotsRadius * 2) + (rDiff * dotsRadius * 2) + (rDiff * dotsSpace)
 
                 from to to
