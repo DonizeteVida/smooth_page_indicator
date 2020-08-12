@@ -57,15 +57,15 @@ abstract class Dots : View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
-    protected fun startDotPosition(): Float {
+    protected fun startDotPosition(otherValue: Float = 0F): Float {
         val dotsLength = (dotsCount - 1) * dotsRadius * 2
         val dotsSpaceLength = (dotsCount - 1) * dotsSpace
 
-        return (layoutWidth.toFloat() - dotsSpaceLength - dotsLength) / 2
+        return (layoutWidth.toFloat() - dotsSpaceLength - dotsLength - otherValue) / 2
     }
 
-    protected fun startRectPosition(): Float =
-        startDotPosition() - dotsRadius
+    protected fun startRectPosition(otherValue: Float = 0F): Float =
+        startDotPosition(otherValue) - dotsRadius
 
     protected fun rectPosition(roundOffset: Int): Float =
         startRectPosition() + (roundOffset * 2 * dotsRadius) + (roundOffset * dotsSpace)
@@ -145,7 +145,7 @@ class WormDots : Dots {
     }
 }
 
-class ExpandingDots : Dots{
+class ExpandingDots : Dots {
     constructor(context: Context?) : super(context)
 
     constructor(
@@ -171,7 +171,7 @@ class ExpandingDots : Dots{
         dotsSpace = 10F
     }
 
-    val expandingValue: Float = 10F
+    private val expandingValue: Float = 190F
 
     private var rRect: RectF = RectF().apply {
         top = 0F
@@ -181,7 +181,46 @@ class ExpandingDots : Dots{
         super.onDraw(canvas)
 
         canvas?.run {
+            var position = startDotPosition(expandingValue)
+            val roundOffset: Int = currentOffset.toInt()
 
+            val firstDifference: Float = 1 - (currentOffset - roundOffset)
+            val secondDifference: Float = 1 - firstDifference
+
+            for (dot in 0 until dotsCount) {
+                if (roundOffset == dot) {
+                    val factor = expandingValue * firstDifference
+
+                    position-=dotsRadius
+
+                    rRect.let {
+                        it.left = position
+                        it.bottom = dotsRadius * 2
+                        it.right = position + factor + (dotsRadius * 2)
+                    }
+
+                    position += factor + (dotsRadius * 2) + dotsSpace
+
+                    drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
+                } else if (dot == roundOffset + (firstDifference + secondDifference).toInt()) {
+                    val factor = expandingValue * secondDifference
+
+                    rRect.let {
+                        it.left = position
+                        it.bottom = dotsRadius * 2
+                        it.right = position + factor + (dotsRadius * 2)
+                    }
+
+                    position += factor + (dotsRadius * 2) + dotsSpace
+
+                    drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
+
+                    position+=dotsRadius
+                } else {
+                    drawCircle(position, layoutHeight.toFloat() / 2, dotsRadius, activeColor)
+                    position += (dotsRadius * 2) + dotsSpace
+                }
+            }
         }
     }
 }

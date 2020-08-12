@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
         Log.d("LISTENER","$position $positionOffset $positionOffsetPixels")
 
         findViewById<WormDots>(R.id.wormDots).currentOffset = position + positionOffset
+        findViewById<ExpandingDots>(R.id.expandingDots).currentOffset = position + positionOffset
     }
 
     override fun onPageSelected(position: Int) = Unit

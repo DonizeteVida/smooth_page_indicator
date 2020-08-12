@@ -8,7 +8,7 @@
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -17,6 +17,14 @@
 
     <com.doni.dots.WormDots
         android:id="@+id/wormDots"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/expandingDots"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.doni.dots.ExpandingDots
+        android:id="@+id/expandingDots"
         android:layout_width="match_parent"
         android:layout_height="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
