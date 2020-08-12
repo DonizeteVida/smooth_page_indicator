@@ -5,26 +5,11 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 
-abstract class Dots : View {
-    constructor(context: Context?) : super(context)
-
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?
-    ) : super(context, attrs)
-
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?,
-        defStyleAttr: Int
-    ) : super(context, attrs, defStyleAttr)
-
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes)
+abstract class Dots @JvmOverloads constructor(
+    context: Context?,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
 
     protected var layoutWidth: Int = 0
     protected var layoutHeight: Int = 0
@@ -71,26 +56,11 @@ abstract class Dots : View {
         startRectPosition() + (roundOffset * 2 * dotsRadius) + (roundOffset * dotsSpace)
 }
 
-class WormDots : Dots {
-    constructor(context: Context?) : super(context)
-
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?
-    ) : super(context, attrs)
-
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?,
-        defStyleAttr: Int
-    ) : super(context, attrs, defStyleAttr)
-
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes)
+class WormDots @JvmOverloads constructor(
+    context: Context?,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : Dots(context, attrs, defStyleAttr) {
 
     init {
         dotsCount = 5
@@ -145,26 +115,11 @@ class WormDots : Dots {
     }
 }
 
-class ExpandingDots : Dots {
-    constructor(context: Context?) : super(context)
-
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?
-    ) : super(context, attrs)
-
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?,
-        defStyleAttr: Int
-    ) : super(context, attrs, defStyleAttr)
-
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes)
+class ExpandingDots @JvmOverloads constructor(
+    context: Context?,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : Dots(context, attrs, defStyleAttr) {
 
     init {
         dotsCount = 5
@@ -191,7 +146,7 @@ class ExpandingDots : Dots {
                 if (roundOffset == dot) {
                     val factor = expandingValue * firstDifference
 
-                    position-=dotsRadius
+                    position -= dotsRadius
 
                     rRect.let {
                         it.left = position
@@ -215,7 +170,7 @@ class ExpandingDots : Dots {
 
                     drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
 
-                    position+=dotsRadius
+                    position += dotsRadius
                 } else {
                     drawCircle(position, layoutHeight.toFloat() / 2, dotsRadius, activeColor)
                     position += (dotsRadius * 2) + dotsSpace
