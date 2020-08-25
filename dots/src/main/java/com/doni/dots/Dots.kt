@@ -50,7 +50,7 @@ abstract class Dots @JvmOverloads constructor(
             val attributes = theme.obtainStyledAttributes(attrs, R.styleable.Dots, defStyleAttr, 0)
 
             dotsCount = attributes.getInteger(R.styleable.Dots_dotsCount, 0)
-            dotsSpace = attributes.getFloat(R.styleable.Dots_dotsSpace, 0F)
+            dotsSpace = attributes.getDimensionPixelSize(R.styleable.Dots_dotsSpace, 0).toFloat()
             dotsRadius = attributes.getFloat(R.styleable.Dots_dotsRadius, -99F)
 
             activeColor.color = attributes.getColor(R.styleable.Dots_activeColor, Color.BLUE)
@@ -145,7 +145,9 @@ class ExpandingDots @JvmOverloads constructor(
             val attributes =
                 theme.obtainStyledAttributes(attrs, R.styleable.ExpandingDots, defStyleAttr, 0)
 
-            expandingSpace = attributes.getFloat(R.styleable.ExpandingDots_expandingSpace, 0f)
+            expandingSpace =
+                attributes.getDimensionPixelSize(R.styleable.ExpandingDots_expandingSpace, 0)
+                    .toFloat()
 
             attributes.recycle()
         }

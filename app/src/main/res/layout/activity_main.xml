@@ -19,7 +19,7 @@
         app:activeColor="#F0F"
         app:dotsCount="5"
         app:dotsRadius="0"
-        app:dotsSpace="20"
+        app:dotsSpace="10dp"
         app:inactiveColor="#25CCFF"
         app:layout_constraintBottom_toTopOf="@+id/expandingDots"
         tools:layout_editor_absoluteX="20dp" />
@@ -31,8 +31,8 @@
         android:layout_height="25dp"
         app:dotsCount="5"
         app:dotsRadius="0"
-        app:dotsSpace="20"
-        app:expandingSpace="150"
+        app:dotsSpace="10dp"
+        app:expandingSpace="50dp"
         app:layout_constraintBottom_toTopOf="@+id/wormDots2"
         tools:layout_editor_absoluteX="20dp" />
 
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="25dp"
         app:dotsCount="5"
-        app:dotsSpace="60"
+        app:dotsSpace="10dp"
         app:layout_constraintBottom_toTopOf="@+id/expandingDots2"
         tools:layout_editor_absoluteX="20dp" />
 
@@ -52,8 +52,8 @@
         android:layout_width="match_parent"
         android:layout_height="25dp"
         app:dotsCount="5"
-        app:dotsSpace="40"
-        app:expandingSpace="150"
+        app:dotsSpace="10dp"
+        app:expandingSpace="50dp"
         app:activeColor="#FABFFC"
         app:layout_constraintBottom_toBottomOf="@+id/viewPager"
         tools:layout_editor_absoluteX="20dp" />

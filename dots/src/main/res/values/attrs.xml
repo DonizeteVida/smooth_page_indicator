@@ -4,7 +4,7 @@
         <attr name="activeColor" format="color"/>
         <attr name="inactiveColor" format="color"/>
         <attr name="dotsCount" format="integer"/>
-        <attr name="dotsSpace" format="float"/>
+        <attr name="dotsSpace" format="dimension"/>
         <attr name="dotsRadius" format="float"/>
     </declare-styleable>
 
@@ -13,6 +13,6 @@
     </declare-styleable>
 
     <declare-styleable name="ExpandingDots">
-        <attr name="expandingSpace" format="float"/>
+        <attr name="expandingSpace" format="dimension"/>
     </declare-styleable>
 </resources>
