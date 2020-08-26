@@ -180,3 +180,36 @@ class ExpandingDots @JvmOverloads constructor(
         }
     }
 }
+
+class SwapDots @JvmOverloads constructor(
+    context: Context?,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : Dots(context, attrs, defStyleAttr) {
+
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
+        canvas?.run {
+            val roundOffset = currentOffset.toInt()
+
+            val diff: Float = currentOffset - roundOffset
+
+            for (dot in dotsCount - 1 downTo 0) {
+
+                val rectPosition = rectPosition(dot)
+                val move = (itemSize + dotsSpace) * diff
+
+                val (color, quantity) = when (dot) {
+                    roundOffset -> activeColor to move
+                    roundOffset + 1 -> inactiveColor to -move
+                    else -> inactiveColor to 0f
+                }
+                updateRRect(
+                    from = rectPosition + quantity,
+                    to = (rectPosition + itemSize) + quantity
+                )
+                drawRoundRect(rRect, dotsRadius, dotsRadius, color)
+            }
+        }
+    }
+}

@@ -11,11 +11,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.doni.dots.WormDots
+    <com.doni.dots.SwapDots
+        android:id="@+id/swapDots"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
         android:layout_margin="20dp"
+        app:activeColor="@color/colorAccent"
+        app:dotsCount="5"
+        app:dotsSpace="10dp"
+        app:inactiveColor="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toTopOf="@+id/wormDots" />
+
+    <com.doni.dots.WormDots
         android:id="@+id/wormDots"
         android:layout_width="match_parent"
         android:layout_height="25dp"
+        android:layout_margin="20dp"
         app:activeColor="#F0F"
         app:dotsCount="5"
         app:dotsRadius="0"
@@ -25,10 +36,10 @@
         tools:layout_editor_absoluteX="20dp" />
 
     <com.doni.dots.ExpandingDots
-        android:layout_margin="20dp"
         android:id="@+id/expandingDots"
         android:layout_width="match_parent"
         android:layout_height="25dp"
+        android:layout_margin="20dp"
         app:dotsCount="5"
         app:dotsRadius="0"
         app:dotsSpace="10dp"
@@ -37,24 +48,24 @@
         tools:layout_editor_absoluteX="20dp" />
 
     <com.doni.dots.WormDots
-        android:layout_margin="20dp"
         android:id="@+id/wormDots2"
         android:layout_width="match_parent"
         android:layout_height="25dp"
+        android:layout_margin="20dp"
         app:dotsCount="5"
         app:dotsSpace="10dp"
         app:layout_constraintBottom_toTopOf="@+id/expandingDots2"
         tools:layout_editor_absoluteX="20dp" />
 
     <com.doni.dots.ExpandingDots
-        android:layout_margin="20dp"
         android:id="@+id/expandingDots2"
         android:layout_width="match_parent"
         android:layout_height="25dp"
+        android:layout_margin="20dp"
+        app:activeColor="#FABFFC"
         app:dotsCount="5"
         app:dotsSpace="10dp"
         app:expandingSpace="50dp"
-        app:activeColor="#FABFFC"
         app:layout_constraintBottom_toBottomOf="@+id/viewPager"
         tools:layout_editor_absoluteX="20dp" />
 
