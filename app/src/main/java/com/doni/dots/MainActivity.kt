@@ -17,9 +17,6 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
         viewPager.adapter = ViewPagerAdapter(supportFragmentManager)
 
         viewPager.addOnPageChangeListener(this)
-
-        findViewById<SwapDots>(R.id.swapDots).setOnDotClicked {
-        }
     }
 
     override fun onPageScrollStateChanged(state: Int) = Unit
@@ -29,6 +26,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
         positionOffset: Float,
         positionOffsetPixels: Int
     ) {
+        findViewById<SlideDots>(R.id.slideDots).currentOffset = position + positionOffset
         findViewById<WormDots>(R.id.wormDots).currentOffset = position + positionOffset
         findViewById<ExpandingDots>(R.id.expandingDots).currentOffset = position + positionOffset
         findViewById<WormDots>(R.id.wormDots2).currentOffset = position + positionOffset

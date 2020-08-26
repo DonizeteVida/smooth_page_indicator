@@ -11,6 +11,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <com.doni.dots.SlideDots
+        app:activeColor="#FAB345"
+        app:inactiveColor="#AAB"
+        android:id="@+id/slideDots"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_margin="20dp"
+        app:dotsCount="5"
+        app:dotsSpace="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/swapDots" />
+
     <com.doni.dots.SwapDots
         android:id="@+id/swapDots"
         android:layout_width="match_parent"

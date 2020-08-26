@@ -259,4 +259,24 @@ class SlideDots @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : Dots(context, attrs, defStyleAttr) {
 
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
+        canvas?.run {
+            for (dot in 0 until dotsCount) {
+                val rectPosition = rectPosition(dot)
+                val (from, to) = rectPosition to rectPosition + itemSize
+                updateRRect(from = from, to = to)
+                updateTouchCordinate(dot, from = from, to = to)
+                drawRoundRect(rRect, dotsRadius, dotsRadius, inactiveColor)
+            }
+            val roundOffset = currentOffset.toInt()
+            val diff: Float = currentOffset - roundOffset
+            val rectPosition = rectPosition(roundOffset)
+            val move = itemSize + dotsSpace
+            val factor = move * diff
+            val (from, to) = (rectPosition + factor) to ((rectPosition + itemSize) + factor)
+            updateRRect(from = from, to = to)
+            drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
+        }
+    }
 }
