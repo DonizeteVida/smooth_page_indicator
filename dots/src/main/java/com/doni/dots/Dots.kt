@@ -110,18 +110,22 @@ class WormDots @JvmOverloads constructor(
 
             val diff = currentOffset - roundOffset.toFloat()
 
-            val (from, to) = if (diff > 0.5F) {
-                val rDiff = ((diff / 0.5) - 1).toFloat()
+            val rDiff = if (diff > 0.5f) {
+                1
+            } else {
+                0
+            }.run {
+                diff * 2 - this
+            }
 
+            val (from, to) = if (diff > 0.5F) {
                 val from = rectPosition(roundOffset) + (rDiff * dotsSpace) + (rDiff * itemSize)
                 val to = rectPosition(roundOffset + 2) - dotsSpace
 
                 from to to
             } else {
-                val rDiff = diff * 2
-
                 val from = rectPosition(roundOffset)
-                val to = from + itemSize + (rDiff * itemSize) + (rDiff * dotsSpace)
+                val to = from + itemSize + (rDiff * dotsSpace) + (rDiff * itemSize)
 
                 from to to
             }
@@ -157,33 +161,21 @@ class ExpandingDots @JvmOverloads constructor(
         super.onDraw(canvas)
 
         canvas?.run {
-            var position = startRectPosition(expandingSpace)
+            var position = startRectPosition(otherValue = expandingSpace)
             val roundOffset: Int = currentOffset.toInt()
 
-            val firstDifference: Float = 1 - (currentOffset - roundOffset)
-            val secondDifference: Float = 1 - firstDifference
+            val secondDifference: Float = currentOffset - roundOffset
+            val firstDifference: Float = 1 - secondDifference
 
             for (dot in 0 until dotsCount) {
-                if (roundOffset == dot) {
-                    val factor = expandingSpace * firstDifference
-
-                    updateRRect(from = position, to = position + factor + itemSize)
-                    drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
-
-                    position += factor + itemSize + dotsSpace
-                } else if (dot == roundOffset + (firstDifference + secondDifference).toInt()) {
-                    val factor = expandingSpace * secondDifference
-
-                    updateRRect(from = position, to = position + factor + itemSize)
-                    drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
-
-                    position += factor + itemSize + dotsSpace
-                } else {
-                    updateRRect(from = position, to = position + itemSize)
-                    drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
-
-                    position += itemSize + dotsSpace
+                val result = when (dot) {
+                    roundOffset -> expandingSpace * firstDifference
+                    (roundOffset + firstDifference + secondDifference).toInt() -> expandingSpace * secondDifference
+                    else -> 0f
                 }
+                updateRRect(from = position, to = position + result + itemSize)
+                drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
+                position += result + itemSize + dotsSpace
             }
         }
     }
