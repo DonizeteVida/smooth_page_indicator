@@ -3,13 +3,22 @@ package com.doni.dots
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
+
+typealias OnDotClicked = ((Int) -> Unit)?
 
 abstract class Dots @JvmOverloads constructor(
     context: Context?,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
+
+    private var _onDotClicked: OnDotClicked = null
+
+    fun setOnDotClicked(onDotClicked: OnDotClicked) {
+        _onDotClicked = onDotClicked
+    }
 
     private var layoutWidth: Int = 0
     private var layoutHeight: Int = 0
@@ -19,6 +28,14 @@ abstract class Dots @JvmOverloads constructor(
     protected var dotsRadius: Float = 0F
 
     protected var itemSize: Float = 0F
+
+    ///Dot index, pair of start point and end point of index
+    private val touchCordinate = HashMap<Int, Pair<Float, Float>>()
+    protected fun updateTouchCordinate(dot: Int, from: Float, to: Float) {
+        touchCordinate[dot] = from to to
+    }
+
+    private fun recoverTouchCordinate(dot: Int) = touchCordinate[dot] ?: Pair(0f, 0f)
 
     val inactiveColor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.GRAY
@@ -86,6 +103,25 @@ abstract class Dots @JvmOverloads constructor(
 
     protected fun rectPosition(roundOffset: Int): Float =
         startRectPosition() + (roundOffset * itemSize) + (roundOffset * dotsSpace)
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val action = event?.action
+        if (action == MotionEvent.ACTION_DOWN) {
+            val x = event.x
+            notifyTappedDot(x)
+        }
+        return super.onTouchEvent(event)
+    }
+
+    private fun notifyTappedDot(xCordinate: Float) {
+        for (dot in 0 until dotsCount) {
+            val (startPosition, endPosition) = recoverTouchCordinate(dot)
+            if (xCordinate in startPosition..endPosition) {
+                _onDotClicked?.invoke(dot)
+                return
+            }
+        }
+    }
 }
 
 class WormDots @JvmOverloads constructor(
@@ -100,8 +136,10 @@ class WormDots @JvmOverloads constructor(
         canvas?.run {
 
             for (dot in 0 until dotsCount) {
-                val position = rectPosition(dot)
-                updateRRect(from = position, to = position + itemSize)
+                val rectPosition = rectPosition(dot)
+                val (from, to) = rectPosition to rectPosition + itemSize
+                updateRRect(from = from, to = to)
+                updateTouchCordinate(dot, from = from, to = to)
                 drawRoundRect(rRect, dotsRadius, dotsRadius, inactiveColor)
             }
 
@@ -167,8 +205,13 @@ class ExpandingDots @JvmOverloads constructor(
                     (roundOffset + firstDifference + secondDifference).toInt() -> expandingSpace * secondDifference
                     else -> 0f
                 }
-                updateRRect(from = position, to = position + result + itemSize)
+
+                val to = position + result + itemSize
+
+                updateRRect(from = position, to = to)
+                updateTouchCordinate(dot, from = position, to = to)
                 drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
+
                 position += result + itemSize + dotsSpace
             }
         }
@@ -198,10 +241,11 @@ class SwapDots @JvmOverloads constructor(
                     roundOffset + 1 -> inactiveColor to -move
                     else -> inactiveColor to 0f
                 }
-                updateRRect(
-                    from = rectPosition + quantity,
-                    to = rectPosition + quantity + itemSize
-                )
+
+                val (from, to) = (rectPosition + quantity) to (rectPosition + quantity + itemSize)
+
+                updateRRect(from = from, to = to)
+                updateTouchCordinate(dot, from = from, to = to)
                 drawRoundRect(rRect, dotsRadius, dotsRadius, color)
             }
         }

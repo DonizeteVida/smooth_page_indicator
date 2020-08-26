@@ -2,13 +2,12 @@ package com.doni.dots
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 
 class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
-    lateinit var viewPager: ViewPager
+    private lateinit var viewPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +17,9 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
         viewPager.adapter = ViewPagerAdapter(supportFragmentManager)
 
         viewPager.addOnPageChangeListener(this)
+
+        findViewById<SwapDots>(R.id.swapDots).setOnDotClicked {
+        }
     }
 
     override fun onPageScrollStateChanged(state: Int) = Unit
