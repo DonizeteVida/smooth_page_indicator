@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(), ViewPager.OnPageChangeListener {
         positionOffset: Float,
         positionOffsetPixels: Int
     ) {
+        findViewById<FillDots>(R.id.fillDots).currentOffset = position + positionOffset
         findViewById<SlideDots>(R.id.slideDots).currentOffset = position + positionOffset
         findViewById<WormDots>(R.id.wormDots).currentOffset = position + positionOffset
         findViewById<ExpandingDots>(R.id.expandingDots).currentOffset = position + positionOffset

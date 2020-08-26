@@ -11,4 +11,8 @@
     <declare-styleable name="ExpandingDots">
         <attr name="expandingSpace" format="dimension"/>
     </declare-styleable>
+
+    <declare-styleable name="FillDots">
+        <attr name="minimumFillPercentage" format="float"/>
+    </declare-styleable>
 </resources>

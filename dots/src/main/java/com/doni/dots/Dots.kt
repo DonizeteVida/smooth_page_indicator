@@ -5,6 +5,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import kotlin.math.max
 
 typealias OnDotClicked = ((Int) -> Unit)?
 
@@ -99,11 +100,12 @@ abstract class Dots @JvmOverloads constructor(
         return (layoutWidth.toFloat() - dotsSpaceLength - dotsLength - otherValue) / 2
     }
 
-    protected fun startRectPosition(otherValue: Float = 0F): Float =
+    protected fun startRectPosition(otherValue: Float = 0F) =
         startPosition(otherValue)
 
-    protected fun rectPosition(roundOffset: Int): Float =
-        startRectPosition() + (roundOffset * itemSize) + (roundOffset * dotsSpace)
+    protected fun rectPosition(roundOffset: Int) =
+        startRectPosition() + roundOffset * (itemSize + dotsSpace)
+
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         val action = event?.action
@@ -203,7 +205,7 @@ class ExpandingDots @JvmOverloads constructor(
             for (dot in 0 until dotsCount) {
                 val result = when (dot) {
                     roundOffset -> expandingSpace * firstDifference
-                    (roundOffset + firstDifference + secondDifference).toInt() -> expandingSpace * secondDifference
+                    roundOffset + 1 -> expandingSpace * secondDifference
                     else -> 0f
                 }
 
@@ -277,6 +279,74 @@ class SlideDots @JvmOverloads constructor(
             val (from, to) = (rectPosition + factor) to ((rectPosition + itemSize) + factor)
             updateRRect(from = from, to = to)
             drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
+        }
+    }
+}
+
+/// See these god https://pspdfkit.com/blog/2018/using-paths-to-draw-shapes-with-borders/
+class FillDots @JvmOverloads constructor(
+    context: Context?,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : Dots(context, attrs, defStyleAttr) {
+
+    private var minimumFillPercentage = 0f
+
+    init {
+        context?.run {
+            val attributes =
+                theme.obtainStyledAttributes(attrs, R.styleable.FillDots, defStyleAttr, 0)
+
+            minimumFillPercentage =
+                attributes.getFloat(R.styleable.FillDots_minimumFillPercentage, .1f)
+
+            attributes.recycle()
+        }
+    }
+
+    private val path = Path()
+    private val innerRectF = RectF(rRect)
+
+    private fun updateInnerRectF(rRect: RectF, inset: Float = 0f) {
+        innerRectF.apply {
+            left = rRect.left
+            bottom = rRect.bottom
+            right = rRect.right
+            top = rRect.top
+            inset(inset, inset)
+        }
+    }
+
+    override fun onDraw(canvas: Canvas?) {
+        super.onDraw(canvas)
+
+        val roundOffset = currentOffset.toInt()
+        val diff = currentOffset - roundOffset
+
+        val firstDifference = 1 - diff
+        val secondDifference = 1 - firstDifference
+
+        canvas?.run {
+            for (dot in 0 until dotsCount) {
+
+                val rectPosition = rectPosition(dot)
+                val (from, to) = rectPosition to rectPosition + itemSize
+
+                val factor = when (dot) {
+                    roundOffset -> max(firstDifference, minimumFillPercentage)
+                    roundOffset + 1 -> max(secondDifference, minimumFillPercentage)
+                    else -> minimumFillPercentage
+                }
+
+                updateRRect(from = from, to = to)
+                updateTouchCordinate(dot, from = from, to = to)
+                path.addRoundRect(rRect, dotsRadius, dotsRadius, Path.Direction.CW)
+                updateInnerRectF(rRect, dotsRadius * factor)
+                path.addRoundRect(innerRectF, dotsRadius, dotsRadius, Path.Direction.CW)
+                path.fillType = Path.FillType.EVEN_ODD
+                drawPath(path, activeColor)
+                path.reset()
+            }
         }
     }
 }
