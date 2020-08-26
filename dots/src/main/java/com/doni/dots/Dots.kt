@@ -31,6 +31,7 @@ abstract class Dots @JvmOverloads constructor(
 
     ///Dot index, pair of start point and end point of index
     private val touchCordinate = HashMap<Int, Pair<Float, Float>>()
+
     protected fun updateTouchCordinate(dot: Int, from: Float, to: Float) {
         touchCordinate[dot] = from to to
     }

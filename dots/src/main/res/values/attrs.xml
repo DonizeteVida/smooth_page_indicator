@@ -8,10 +8,6 @@
         <attr name="dotsRadius" format="float"/>
     </declare-styleable>
 
-    <declare-styleable name="WormDots">
-
-    </declare-styleable>
-
     <declare-styleable name="ExpandingDots">
         <attr name="expandingSpace" format="dimension"/>
     </declare-styleable>
