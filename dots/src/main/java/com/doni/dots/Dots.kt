@@ -98,34 +98,28 @@ class WormDots @JvmOverloads constructor(
         super.onDraw(canvas)
 
         canvas?.run {
-            var position = startRectPosition()
 
             for (dot in 0 until dotsCount) {
+                val position = rectPosition(dot)
                 updateRRect(from = position, to = position + itemSize)
                 drawRoundRect(rRect, dotsRadius, dotsRadius, inactiveColor)
-                position += itemSize + dotsSpace
             }
 
             val roundOffset = currentOffset.toInt()
 
             val diff = currentOffset - roundOffset.toFloat()
+            val move = dotsSpace + itemSize
 
-            val rDiff = if (diff > 0.5f) {
-                1
-            } else {
-                0
-            }.run {
-                diff * 2 - this
-            }
+            val fraction = diff * 2
 
             val (from, to) = if (diff > 0.5F) {
-                val from = rectPosition(roundOffset) + (rDiff * dotsSpace) + (rDiff * itemSize)
+                val from = rectPosition(roundOffset) + ((fraction - 1) * move)
                 val to = rectPosition(roundOffset + 2) - dotsSpace
 
                 from to to
             } else {
                 val from = rectPosition(roundOffset)
-                val to = from + itemSize + (rDiff * dotsSpace) + (rDiff * itemSize)
+                val to = from + itemSize + fraction * move
 
                 from to to
             }
@@ -206,10 +200,18 @@ class SwapDots @JvmOverloads constructor(
                 }
                 updateRRect(
                     from = rectPosition + quantity,
-                    to = (rectPosition + itemSize) + quantity
+                    to = rectPosition + quantity + itemSize
                 )
                 drawRoundRect(rRect, dotsRadius, dotsRadius, color)
             }
         }
     }
+}
+
+class SlideDots @JvmOverloads constructor(
+    context: Context?,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : Dots(context, attrs, defStyleAttr) {
+
 }
