@@ -291,6 +291,7 @@ class FillDots @JvmOverloads constructor(
 ) : Dots(context, attrs, defStyleAttr) {
 
     private var minimumFillPercentage = 0f
+    private var fillPercentage = 0f
 
     init {
         context?.run {
@@ -299,6 +300,7 @@ class FillDots @JvmOverloads constructor(
 
             minimumFillPercentage =
                 attributes.getFloat(R.styleable.FillDots_minimumFillPercentage, .1f)
+            fillPercentage = 1f - minimumFillPercentage
 
             attributes.recycle()
         }
@@ -333,16 +335,23 @@ class FillDots @JvmOverloads constructor(
                 val (from, to) = rectPosition to rectPosition + itemSize
 
                 val factor = when (dot) {
-                    roundOffset -> max(firstDifference, minimumFillPercentage)
-                    roundOffset + 1 -> max(secondDifference, minimumFillPercentage)
-                    else -> minimumFillPercentage
+                    roundOffset -> firstDifference
+                    roundOffset + 1 -> secondDifference
+                    else -> 0f
                 }
 
-                updateRRect(from = from, to = to)
+
                 updateTouchCordinate(dot, from = from, to = to)
+
+                updateRRect(from = from, to = to)
                 path.addRoundRect(rRect, dotsRadius, dotsRadius, Path.Direction.CW)
-                updateInnerRectF(rRect, dotsRadius * factor)
+
+                updateInnerRectF(
+                    rRect,
+                    (dotsRadius * minimumFillPercentage) + (dotsRadius * factor * fillPercentage)
+                )
                 path.addRoundRect(innerRectF, dotsRadius, dotsRadius, Path.Direction.CW)
+
                 path.fillType = Path.FillType.EVEN_ODD
                 drawPath(path, activeColor)
                 path.reset()
