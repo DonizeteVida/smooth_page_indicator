@@ -5,7 +5,6 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import kotlin.math.max
 
 typealias OnDotClicked = ((Int) -> Unit)?
 
@@ -33,11 +32,11 @@ abstract class Dots @JvmOverloads constructor(
     ///Dot index, pair of start point and end point of index
     private val touchCordinate = HashMap<Int, Pair<Float, Float>>()
 
-    protected fun updateTouchCordinate(dot: Int, from: Float, to: Float) {
+    protected fun updateTouchCoordinate(dot: Int, from: Float, to: Float) {
         touchCordinate[dot] = from to to
     }
 
-    private fun recoverTouchCordinate(dot: Int) = touchCordinate[dot] ?: Pair(0f, 0f)
+    private fun recoverTouchCoordinate(dot: Int) = touchCordinate[dot] ?: Pair(0f, 0f)
 
     val inactiveColor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.GRAY
@@ -116,10 +115,10 @@ abstract class Dots @JvmOverloads constructor(
         return super.onTouchEvent(event)
     }
 
-    private fun notifyTappedDot(xCordinate: Float) {
+    private fun notifyTappedDot(xCoordinate: Float) {
         for (dot in 0 until dotsCount) {
-            val (startPosition, endPosition) = recoverTouchCordinate(dot)
-            if (xCordinate in startPosition..endPosition) {
+            val (startPosition, endPosition) = recoverTouchCoordinate(dot)
+            if (xCoordinate in startPosition..endPosition) {
                 _onDotClicked?.invoke(dot)
                 return
             }
@@ -142,7 +141,7 @@ class WormDots @JvmOverloads constructor(
                 val rectPosition = rectPosition(dot)
                 val (from, to) = rectPosition to rectPosition + itemSize
                 updateRRect(from = from, to = to)
-                updateTouchCordinate(dot, from = from, to = to)
+                updateTouchCoordinate(dot, from = from, to = to)
                 drawRoundRect(rRect, dotsRadius, dotsRadius, inactiveColor)
             }
 
@@ -212,7 +211,7 @@ class ExpandingDots @JvmOverloads constructor(
                 val to = position + result + itemSize
 
                 updateRRect(from = position, to = to)
-                updateTouchCordinate(dot, from = position, to = to)
+                updateTouchCoordinate(dot, from = position, to = to)
                 drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
 
                 position += result + itemSize + dotsSpace
@@ -248,7 +247,7 @@ class SwapDots @JvmOverloads constructor(
                 val (from, to) = (rectPosition + quantity) to (rectPosition + quantity + itemSize)
 
                 updateRRect(from = from, to = to)
-                updateTouchCordinate(dot, from = from, to = to)
+                updateTouchCoordinate(dot, from = from, to = to)
                 drawRoundRect(rRect, dotsRadius, dotsRadius, color)
             }
         }
@@ -268,7 +267,7 @@ class SlideDots @JvmOverloads constructor(
                 val rectPosition = rectPosition(dot)
                 val (from, to) = rectPosition to rectPosition + itemSize
                 updateRRect(from = from, to = to)
-                updateTouchCordinate(dot, from = from, to = to)
+                updateTouchCoordinate(dot, from = from, to = to)
                 drawRoundRect(rRect, dotsRadius, dotsRadius, inactiveColor)
             }
             val roundOffset = currentOffset.toInt()
@@ -341,7 +340,7 @@ class FillDots @JvmOverloads constructor(
                 }
 
 
-                updateTouchCordinate(dot, from = from, to = to)
+                updateTouchCoordinate(dot, from = from, to = to)
 
                 updateRRect(from = from, to = to)
                 path.addRoundRect(rRect, dotsRadius, dotsRadius, Path.Direction.CW)
