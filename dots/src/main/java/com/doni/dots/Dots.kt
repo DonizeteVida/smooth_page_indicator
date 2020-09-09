@@ -30,13 +30,13 @@ abstract class Dots @JvmOverloads constructor(
     protected var itemSize: Float = 0F
 
     ///Dot index, pair of start point and end point of index
-    private val touchCordinate = HashMap<Int, Pair<Float, Float>>()
+    private val touchCoordinate = HashMap<Int, Pair<Float, Float>>()
 
     protected fun updateTouchCoordinate(dot: Int, from: Float, to: Float) {
-        touchCordinate[dot] = from to to
+        touchCoordinate[dot] = from to to
     }
 
-    private fun recoverTouchCoordinate(dot: Int) = touchCordinate[dot] ?: Pair(0f, 0f)
+    private fun recoverTouchCoordinate(dot: Int) = touchCoordinate[dot] ?: Pair(0f, 0f)
 
     val inactiveColor = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.GRAY
@@ -107,8 +107,7 @@ abstract class Dots @JvmOverloads constructor(
 
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        val action = event?.action
-        if (action == MotionEvent.ACTION_DOWN) {
+        if (event?.action == MotionEvent.ACTION_DOWN) {
             val x = event.x
             notifyTappedDot(x)
         }
@@ -273,9 +272,9 @@ class SlideDots @JvmOverloads constructor(
             val roundOffset = currentOffset.toInt()
             val diff: Float = currentOffset - roundOffset
             val rectPosition = rectPosition(roundOffset)
-            val move = itemSize + dotsSpace
-            val factor = move * diff
-            val (from, to) = (rectPosition + factor) to ((rectPosition + itemSize) + factor)
+            val factor = (itemSize + dotsSpace) * diff
+            val startOf = rectPosition + factor
+            val (from, to) = startOf to startOf + itemSize
             updateRRect(from = from, to = to)
             drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
         }
@@ -338,7 +337,6 @@ class FillDots @JvmOverloads constructor(
                     roundOffset + 1 -> secondDifference
                     else -> 0f
                 }
-
 
                 updateTouchCoordinate(dot, from = from, to = to)
 
