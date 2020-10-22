@@ -1,5 +1,6 @@
 package com.doni.dots
 
+import android.animation.ArgbEvaluator
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -176,6 +177,13 @@ class ExpandingDots @JvmOverloads constructor(
 ) : Dots(context, attrs, defStyleAttr) {
 
     private var expandingSpace: Float = 0F
+    private val evaluator = ArgbEvaluator()
+
+    private fun updateDynamicColor(color: Int){
+        dynamicPaint.color = color
+    }
+
+    private val dynamicPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     init {
         context?.run {
@@ -201,17 +209,21 @@ class ExpandingDots @JvmOverloads constructor(
             val firstDifference: Float = 1 - secondDifference
 
             for (dot in 0 until dotsCount) {
-                val result = when (dot) {
-                    roundOffset -> expandingSpace * firstDifference
-                    roundOffset + 1 -> expandingSpace * secondDifference
-                    else -> 0f
+                val (result, fraction) = when (dot) {
+                    roundOffset -> (expandingSpace * firstDifference) to firstDifference
+                    roundOffset + 1 -> (expandingSpace * secondDifference) to secondDifference
+                    else -> 0f to 0f
                 }
 
                 val to = position + result + itemSize
 
                 updateRRect(from = position, to = to)
                 updateTouchCoordinate(dot, from = position, to = to)
-                drawRoundRect(rRect, dotsRadius, dotsRadius, activeColor)
+
+                val dynamicColor = evaluator.evaluate(fraction, inactiveColor.color, activeColor.color) as Int
+                updateDynamicColor(dynamicColor)
+
+                drawRoundRect(rRect, dotsRadius, dotsRadius, dynamicPaint)
 
                 position += result + itemSize + dotsSpace
             }

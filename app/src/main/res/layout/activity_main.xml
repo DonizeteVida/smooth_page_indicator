@@ -65,6 +65,8 @@
         app:dotsRadius="0"
         app:dotsSpace="10dp"
         app:expandingSpace="50dp"
+        app:activeColor="@color/colorAccent"
+        app:inactiveColor="@color/colorPrimaryDark"
         app:layout_constraintBottom_toTopOf="@+id/wormDots2"
         tools:layout_editor_absoluteX="20dp" />
 
