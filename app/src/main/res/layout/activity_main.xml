@@ -21,7 +21,7 @@
         app:activeColor="#000000"
         app:inactiveColor="#00FFF0"
         app:layout_constraintBottom_toTopOf="@+id/slideDots"
-        app:minimumFillPercentage="0.2" />
+        app:minimumFillPercentage=".05" />
 
     <com.doni.dots.SlideDots
         android:id="@+id/slideDots"
