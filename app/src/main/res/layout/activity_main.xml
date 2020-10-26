@@ -18,6 +18,8 @@
         android:layout_margin="20dp"
         app:dotsCount="5"
         app:dotsSpace="10dp"
+        app:activeColor="#000000"
+        app:inactiveColor="#00FFF0"
         app:layout_constraintBottom_toTopOf="@+id/slideDots"
         app:minimumFillPercentage="0.2" />
 
@@ -61,14 +63,13 @@
         android:layout_width="match_parent"
         android:layout_height="25dp"
         android:layout_margin="20dp"
+        app:activeColor="#000000"
         app:dotsCount="5"
         app:dotsRadius="0"
         app:dotsSpace="10dp"
         app:expandingSpace="50dp"
-        app:activeColor="@color/colorAccent"
-        app:inactiveColor="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toTopOf="@+id/wormDots2"
-        tools:layout_editor_absoluteX="20dp" />
+        app:inactiveColor="#FF0000"
+        app:layout_constraintBottom_toTopOf="@+id/wormDots2" />
 
     <com.doni.dots.WormDots
         android:id="@+id/wormDots2"
@@ -86,6 +87,7 @@
         android:layout_height="25dp"
         android:layout_margin="20dp"
         app:activeColor="#FABFFC"
+        app:inactiveColor="#3E1540"
         app:dotsCount="5"
         app:dotsSpace="10dp"
         app:expandingSpace="50dp"

@@ -318,6 +318,14 @@ class FillDots @JvmOverloads constructor(
 
     private val path = Path()
     private val innerRectF = RectF(rRect)
+    private val evaluator = ArgbEvaluator()
+
+
+    private fun updateDynamicColor(color: Int){
+        dynamicPaint.color = color
+    }
+
+    private val dynamicPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     private fun updateInnerRectF(rRect: RectF, inset: Float = 0f) {
         innerRectF.apply {
@@ -362,7 +370,11 @@ class FillDots @JvmOverloads constructor(
                 path.addRoundRect(innerRectF, dotsRadius, dotsRadius, Path.Direction.CW)
 
                 path.fillType = Path.FillType.EVEN_ODD
-                drawPath(path, activeColor)
+
+                val dynamicColor = evaluator.evaluate(factor, inactiveColor.color, activeColor.color) as Int
+                updateDynamicColor(dynamicColor)
+
+                drawPath(path, dynamicPaint)
                 path.reset()
             }
         }
